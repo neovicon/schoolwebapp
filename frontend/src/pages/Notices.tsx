@@ -1,0 +1,1 @@
+export default function Notices() { return <div className="p-8 min-h-screen">Notices Page</div>; }

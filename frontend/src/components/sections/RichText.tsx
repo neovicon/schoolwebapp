@@ -1,0 +1,1 @@
+export default function RichText(props: any) { return <section className="py-16"><div className="container-custom text-center">RichText Section</div></section>; }

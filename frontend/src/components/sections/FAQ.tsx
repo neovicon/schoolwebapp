@@ -1,0 +1,1 @@
+export default function FAQ(props: any) { return <section className="py-16"><div className="container-custom text-center">FAQ Section</div></section>; }

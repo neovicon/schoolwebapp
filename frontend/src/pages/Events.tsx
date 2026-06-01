@@ -1,0 +1,1 @@
+export default function Events() { return <div className="p-8 min-h-screen">Events Page</div>; }

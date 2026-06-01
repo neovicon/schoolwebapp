@@ -1,0 +1,1 @@
+export default function Gallery(props: any) { return <section className="py-16"><div className="container-custom text-center">Gallery Section</div></section>; }

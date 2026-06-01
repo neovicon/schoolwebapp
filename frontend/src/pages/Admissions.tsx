@@ -1,0 +1,1 @@
+export default function Admissions() { return <div className="p-8 min-h-screen">Admissions Page</div>; }

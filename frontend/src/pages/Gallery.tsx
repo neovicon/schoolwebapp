@@ -1,0 +1,1 @@
+export default function Gallery() { return <div className="p-8 min-h-screen">Gallery Page</div>; }

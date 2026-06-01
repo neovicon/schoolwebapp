@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_image_galleries",
+  "info": {
+    "displayName": "ImageGallery",
+    "icon": "picture",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "images": {
+      "type": "media",
+      "multiple": true,
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ]
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "collectionName": "components_blocks_text_blocks",
+  "info": {
+    "displayName": "TextBlock",
+    "icon": "layer",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "content": {
+      "type": "richtext",
+      "required": true
+    }
+  }
+}

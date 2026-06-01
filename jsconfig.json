@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "ES2021",
+    "checkJs": true,
+    "allowJs": true
+  },
+  "exclude": [
+    "frontend",
+    "node_modules",
+    ".tmp",
+    "build"
+  ]
+}

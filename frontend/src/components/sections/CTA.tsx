@@ -1,0 +1,1 @@
+export default function CTA(props: any) { return <section className="py-16"><div className="container-custom text-center">CTA Section</div></section>; }

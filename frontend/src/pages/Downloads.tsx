@@ -1,0 +1,1 @@
+export default function Downloads() { return <div className="p-8 min-h-screen">Downloads Page</div>; }
