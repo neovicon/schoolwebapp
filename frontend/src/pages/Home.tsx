@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet-async';
 const mockHomeSections: Section[] = [
   {
     id: 1,
-    __component: 'sections.hero',
+    __component: 'blocks.hero',
     title: 'Empowering the Next Generation of Global Leaders',
     subtitle: 'Providing world-class education with a focus on academic excellence, character development, and innovative thinking.',
     backgroundImageUrl: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070&auto=format&fit=crop',
@@ -19,19 +19,23 @@ const mockHomeSections: Section[] = [
   },
   {
     id: 2,
-    __component: 'sections.features',
+    __component: 'blocks.features',
   },
   {
     id: 3,
-    __component: 'sections.statistics',
+    __component: 'blocks.statistics',
   },
   {
     id: 4,
-    __component: 'sections.testimonials',
+    __component: 'blocks.testimonial',
   },
   {
     id: 5,
-    __component: 'sections.cta',
+    __component: 'blocks.call-to-action',
+  },
+  {
+    id: 6,
+    __component: 'blocks.news-preview',
   }
 ];
 
@@ -40,9 +44,9 @@ export default function Home() {
     queryKey: ['page', 'home'],
     queryFn: async () => {
       try {
-        const response = await fetcher('/pages?filters[slug][$eq]=home&populate[sections][populate]=*');
-        if (response?.data?.[0]?.attributes?.sections) {
-          return response.data[0].attributes.sections;
+        const response = await fetcher('/pages?filters[slug][$eq]=home&populate[blocks][populate]=*');
+        if (response?.data?.[0]?.blocks) {
+          return response.data[0].blocks;
         }
         return mockHomeSections;
       } catch (error) {

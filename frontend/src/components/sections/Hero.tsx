@@ -6,6 +6,7 @@ export interface HeroProps {
   title: string;
   subtitle: string;
   backgroundImageUrl?: string;
+  backgroundImage?: any;
   primaryCtaText?: string;
   primaryCtaLink?: string;
   secondaryCtaText?: string;
@@ -16,19 +17,31 @@ export default function Hero({
   title,
   subtitle,
   backgroundImageUrl,
+  backgroundImage,
   primaryCtaText,
   primaryCtaLink,
   secondaryCtaText,
   secondaryCtaLink,
 }: HeroProps) {
+  let finalImageUrl = backgroundImageUrl;
+  if (!finalImageUrl && backgroundImage?.url) {
+    let url = backgroundImage.url;
+    if (url.startsWith('/')) {
+      const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:1337/api';
+      const serverUrl = apiBase.replace('/api', '');
+      url = `${serverUrl}${url}`;
+    }
+    finalImageUrl = url;
+  }
+
   return (
     <div className="relative bg-slate-900 overflow-hidden min-h-[80vh] flex items-center">
       {/* Background Image with Overlay */}
-      {backgroundImageUrl && (
+      {finalImageUrl && (
         <>
           <div className="absolute inset-0">
             <img
-              src={backgroundImageUrl}
+              src={finalImageUrl}
               alt="Hero Background"
               className="w-full h-full object-cover"
             />

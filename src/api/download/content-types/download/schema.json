@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "downloads",
+  "info": {
+    "singularName": "download",
+    "pluralName": "downloads",
+    "displayName": "Download"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "file": {
+      "type": "media",
+      "required": true,
+      "allowedTypes": [
+        "files",
+        "images"
+      ],
+      "multiple": false
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "syllabus",
+        "forms",
+        "circulars",
+        "results",
+        "other"
+      ],
+      "default": "other"
+    },
+    "description": {
+      "type": "text"
+    }
+  }
+}

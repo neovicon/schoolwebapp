@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "page_backgrounds",
+  "info": {
+    "singularName": "page-background",
+    "pluralName": "page-backgrounds",
+    "displayName": "Page Background",
+    "description": "Background images for specific pages"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "pageName": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "pageName",
+      "required": true
+    },
+    "backgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    }
+  }
+}

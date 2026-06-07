@@ -1,0 +1,40 @@
+{
+  "kind": "singleType",
+  "collectionName": "school_settings",
+  "info": {
+    "singularName": "school-setting",
+    "pluralName": "school-settings",
+    "displayName": "School Setting",
+    "description": "Global school settings like name, logo, contact info"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "contactEmail": {
+      "type": "string"
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "address": {
+      "type": "text"
+    },
+    "primaryColor": {
+      "type": "string"
+    },
+    "socialLinks": {
+      "type": "json"
+    }
+  }
+}

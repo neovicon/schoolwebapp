@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notices",
+  "info": {
+    "singularName": "notice",
+    "pluralName": "notices",
+    "displayName": "Notice"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "body": {
+      "type": "richtext"
+    },
+    "priority": {
+      "type": "enumeration",
+      "enum": [
+        "urgent",
+        "important",
+        "general"
+      ],
+      "default": "general"
+    },
+    "attachment": {
+      "type": "media",
+      "allowedTypes": [
+        "files",
+        "images"
+      ],
+      "multiple": false
+    }
+  }
+}

@@ -15,6 +15,7 @@ const Downloads = lazy(() => import('../pages/Downloads'));
 const Contact = lazy(() => import('../pages/Contact'));
 const FAQ = lazy(() => import('../pages/FAQ'));
 const Notices = lazy(() => import('../pages/Notices'));
+const NotFound = lazy(() => import('../pages/NotFound'));
 
 export const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ export const router = createBrowserRouter([
       { path: 'contact', element: <Contact /> },
       { path: 'faq', element: <FAQ /> },
       { path: 'notices', element: <Notices /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ]);

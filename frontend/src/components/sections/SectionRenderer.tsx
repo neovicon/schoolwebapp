@@ -9,6 +9,7 @@ const Gallery = lazy(() => import('../sections/Gallery'));
 const CTA = lazy(() => import('../sections/CTA'));
 const Testimonials = lazy(() => import('../sections/Testimonials'));
 const FAQ = lazy(() => import('../sections/FAQ'));
+const NewsPreview = lazy(() => import('../sections/NewsPreview'));
 
 export interface Section {
   id: number;
@@ -29,52 +30,58 @@ export default function SectionRenderer({ sections }: SectionRendererProps) {
         const key = `${section.__component}-${section.id || index}`;
 
         switch (section.__component) {
-          case 'sections.hero':
+          case 'blocks.hero':
             return (
               <Suspense key={key} fallback={<div className="h-[80vh] bg-slate-100 animate-pulse" />}>
                 <Hero {...(section as any)} />
               </Suspense>
             );
-          case 'sections.features':
+          case 'blocks.features':
             return (
               <Suspense key={key} fallback={<div className="py-24 bg-slate-50 animate-pulse" />}>
-                <Features {...section} />
+                <Features {...(section as any)} />
               </Suspense>
             );
-          case 'sections.statistics':
+          case 'blocks.statistics':
             return (
               <Suspense key={key} fallback={<div className="py-16 bg-primary-900 animate-pulse" />}>
-                <Statistics {...section} />
+                <Statistics {...(section as any)} />
               </Suspense>
             );
-          case 'sections.rich-text':
+          case 'blocks.text-block':
             return (
               <Suspense key={key} fallback={<div className="py-16 bg-white animate-pulse" />}>
-                <RichText {...section} />
+                <RichText {...(section as any)} />
               </Suspense>
             );
-          case 'sections.gallery':
+          case 'blocks.image-gallery':
             return (
               <Suspense key={key} fallback={<div className="py-16 bg-slate-50 animate-pulse" />}>
-                <Gallery {...section} />
+                <Gallery {...(section as any)} />
               </Suspense>
             );
-          case 'sections.cta':
+          case 'blocks.call-to-action':
             return (
               <Suspense key={key} fallback={<div className="py-16 bg-primary-50 animate-pulse" />}>
-                <CTA {...section} />
+                <CTA {...(section as any)} />
               </Suspense>
             );
-          case 'sections.testimonials':
+          case 'blocks.testimonial':
             return (
               <Suspense key={key} fallback={<div className="py-24 bg-white animate-pulse" />}>
-                <Testimonials {...section} />
+                <Testimonials {...(section as any)} />
               </Suspense>
             );
-          case 'sections.faq':
+          case 'blocks.faq':
             return (
               <Suspense key={key} fallback={<div className="py-24 bg-slate-50 animate-pulse" />}>
-                <FAQ {...section} />
+                <FAQ {...(section as any)} />
+              </Suspense>
+            );
+          case 'blocks.news-preview':
+            return (
+              <Suspense key={key} fallback={<div className="py-24 bg-slate-50 animate-pulse" />}>
+                <NewsPreview />
               </Suspense>
             );
           default:

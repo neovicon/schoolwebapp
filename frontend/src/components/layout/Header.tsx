@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSchoolSettings } from '../../hooks/useSchoolSettings';
-import { Menu, X, ChevronDown, GraduationCap, Calendar, FileText, Info, Phone, Users, Image } from 'lucide-react';
+// import { Menu, X, ChevronDown, GraduationCap, Calendar, FileText, Info, Phone, Users, Image, Mail, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Menu, X, ChevronDown, GraduationCap, Calendar, FileText, Info, Phone, Users, Image, Mail } from 'lucide-react';
+import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navigation = [
-  { name: 'Home', href: '/' },
   {
     name: 'About',
     href: '/about',
@@ -41,26 +42,64 @@ export default function Header() {
   const { data: settings } = useSchoolSettings();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [showAnnouncement, setShowAnnouncement] = useState(() => {
+    return localStorage.getItem('hideAnnouncement') !== 'true';
+  });
   const location = useLocation();
 
   const handleMouseEnter = (name: string) => setActiveDropdown(name);
   const handleMouseLeave = () => setActiveDropdown(null);
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (location.pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const dismissAnnouncement = () => {
+    setShowAnnouncement(false);
+    localStorage.setItem('hideAnnouncement', 'true');
+  };
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-      <nav className="flex items-center justify-between p-4 lg:px-8 max-w-7xl mx-auto" aria-label="Global">
+    <>
+    <header className="fixed inset-x-0 top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm flex flex-col">
+      {showAnnouncement && (
+        <div className="hidden sm:flex bg-primary-700 text-primary-50 px-4 py-2 text-sm justify-between items-center z-50">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Phone className="w-4 h-4" />
+              <span>{settings?.contactPhone || '+1 234 567 890'}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Mail className="w-4 h-4" />
+              <span>{settings?.contactEmail || 'info@school.com'}</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <a href={settings?.socialLinks?.facebook || '#'}><FaFacebook className="w-4 h-4 hover:text-white transition-colors" /></a>
+              <a href={settings?.socialLinks?.twitter || '#'}><FaXTwitter className="w-4 h-4 hover:text-white transition-colors" /></a>
+              <a href={settings?.socialLinks?.instagram || '#'}><FaInstagram className="w-4 h-4 hover:text-white transition-colors" /></a>
+            </div>
+            <button onClick={dismissAnnouncement} className="ml-2 p-1 hover:bg-primary-600 rounded">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+      <nav className="flex items-center justify-between p-4 lg:px-8 max-w-7xl mx-auto w-full" aria-label="Global">
         <div className="flex lg:flex-1">
-          <Link to="/" className="-m-1.5 p-1.5 flex items-center gap-3">
+          <Link to="/" onClick={handleLogoClick} className="-m-1.5 p-1.5 flex items-center gap-3">
             {settings?.logoUrl ? (
-              <img className="h-10 w-auto" src={settings.logoUrl} alt={settings.name} />
-            ) : (
+              <img className="h-10 w-auto" src={settings.logoUrl} alt={settings.name || 'School Logo'} />
+            ) : settings?.name ? (
               <div className="h-10 w-10 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
-                {settings?.name.charAt(0) || 'S'}
+                {settings.name.charAt(0)}
               </div>
-            )}
-            <span className="font-heading font-bold text-xl text-slate-900 hidden sm:block">
-              {settings?.name || 'School CMS'}
-            </span>
+            ) : null}
+            {settings?.name && <span className="font-heading font-bold text-lg">{settings.name}</span>}
           </Link>
         </div>
         <div className="flex lg:hidden">
@@ -83,11 +122,10 @@ export default function Header() {
             >
               <Link
                 to={item.children ? '#' : item.href}
-                className={`flex items-center gap-1 text-sm font-semibold leading-6 transition-colors px-2 py-1 rounded-md ${
-                  location.pathname === item.href || (item.children && activeDropdown === item.name)
-                    ? 'text-primary-600'
-                    : 'text-slate-700 hover:text-primary-600 hover:bg-slate-50'
-                }`}
+                className={`flex items-center gap-1 text-sm font-semibold leading-6 transition-colors px-2 py-1 rounded-md ${location.pathname === item.href || (item.children && activeDropdown === item.name)
+                  ? 'text-primary-600'
+                  : 'text-slate-700 hover:text-primary-600 hover:bg-slate-50'
+                  }`}
               >
                 {item.name}
                 {item.children && <ChevronDown className="h-4 w-4" />}
@@ -135,6 +173,8 @@ export default function Header() {
         </div>
       </nav>
 
+    </header>
+
       {/* Mobile menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -143,7 +183,7 @@ export default function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm lg:hidden"
+              className="fixed inset-0 z-[100] bg-slate-900/80 backdrop-blur-sm lg:hidden"
               onClick={() => setMobileMenuOpen(false)}
             />
             <motion.div
@@ -151,14 +191,18 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-slate-900/10"
+              className="fixed inset-y-0 right-0 z-[100] w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-slate-900/10"
             >
               <div className="flex items-center justify-between">
-                <Link to="/" className="-m-1.5 p-1.5 flex items-center gap-3">
-                   <div className="h-8 w-8 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold">
-                    {settings?.name.charAt(0) || 'S'}
-                  </div>
-                  <span className="font-heading font-bold text-lg">{settings?.name || 'School'}</span>
+                <Link to="/" className="-m-1.5 p-1.5 flex items-center gap-3" onClick={() => setMobileMenuOpen(false)}>
+                  {settings?.logoUrl ? (
+                    <img className="h-8 w-auto" src={settings.logoUrl} alt={settings.name || 'School Logo'} />
+                  ) : settings?.name ? (
+                    <div className="h-8 w-8 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold">
+                      {settings.name.charAt(0)}
+                    </div>
+                  ) : null}
+                  {settings?.name && <span className="font-heading font-bold text-lg">{settings.name}</span>}
                 </Link>
                 <button
                   type="button"
@@ -176,7 +220,9 @@ export default function Header() {
                       <div key={item.name}>
                         {item.children ? (
                           <div className="space-y-1">
-                            <div className="font-medium text-slate-900 px-3 py-2">{item.name}</div>
+                            <div className="font-medium text-slate-900 px-3 py-2 flex justify-between items-center">
+                              {item.name}
+                            </div>
                             <div className="pl-6 space-y-1 border-l-2 border-slate-100 ml-4">
                               {item.children.map((child) => (
                                 <Link
@@ -217,6 +263,6 @@ export default function Header() {
           </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }

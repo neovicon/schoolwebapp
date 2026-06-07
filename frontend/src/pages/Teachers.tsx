@@ -3,8 +3,10 @@ import { Helmet } from 'react-helmet-async';
 import { fetcher } from '../api/axios';
 import { Card, CardBody } from '../components/ui/Card';
 import { Mail, BookOpen } from 'lucide-react';
+import { usePageBackground } from '../hooks/usePageBackground';
 
 export default function Teachers() {
+  const { data: bgImage } = usePageBackground('teachers');
   const { data, isLoading } = useQuery({
     queryKey: ['teachers'],
     queryFn: async () => {
@@ -19,20 +21,30 @@ export default function Teachers() {
   });
 
   // Base URL for Strapi uploads if url is relative
-  const getUrl = (url: string) => url.startsWith('/') ? `http://localhost:1337${url}` : url;
+  const strapiBaseUrl = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:1337';
+  const getUrl = (url: string) => url.startsWith('/') ? `${strapiBaseUrl}${url}` : url;
 
   return (
     <>
       <Helmet>
         <title>Our Teachers - Global Excellence Academy</title>
+        <meta name="description" content="Meet our dedicated team of educators committed to inspiring and guiding our students towards excellence." />
+        <meta property="og:title" content="Our Teachers - Global Excellence Academy" />
+        <meta property="og:description" content="Meet our dedicated team of educators committed to inspiring and guiding our students towards excellence." />
       </Helmet>
 
-      <div className="bg-primary-900 py-16 text-center text-white">
-        <h1 className="text-4xl font-bold font-heading">Our Teachers</h1>
-        <p className="mt-4 text-primary-100 max-w-2xl mx-auto">
-          Meet our dedicated team of educators committed to inspiring and guiding our students towards excellence.
-        </p>
-      </div>
+      <section 
+        className="bg-primary-900 py-16 text-center text-white relative"
+        style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+      >
+        {bgImage && <div className="absolute inset-0 bg-primary-900/80"></div>}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <h1 className="text-4xl font-bold font-heading">Our Teachers</h1>
+          <p className="mt-4 text-primary-100 max-w-2xl mx-auto">
+            Meet our dedicated team of educators committed to inspiring and guiding our students towards excellence.
+          </p>
+        </div>
+      </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {isLoading ? (
@@ -52,6 +64,7 @@ export default function Teachers() {
                     <img 
                       src={getUrl(teacher.photo.url)} 
                       alt={teacher.name}
+                      loading="lazy"
                       className="w-full h-full object-cover object-top"
                     />
                   </div>

@@ -16,18 +16,13 @@ export interface SchoolSettings {
   };
 }
 
-// Mock fallback data while Strapi isn't fully set up
-const fallbackSettings: SchoolSettings = {
-  name: 'Global Excellence Academy',
-  contactEmail: 'info@globalexcellence.edu',
-  contactPhone: '+1 (555) 123-4567',
-  address: '123 Education Boulevard, Academic City, AC 12345',
-  primaryColor: '#0f766e',
-  socialLinks: {
-    facebook: 'https://facebook.com',
-    twitter: 'https://twitter.com',
-    instagram: 'https://instagram.com',
-  }
+const emptySettings: SchoolSettings = {
+  name: '',
+  contactEmail: '',
+  contactPhone: '',
+  address: '',
+  primaryColor: '',
+  socialLinks: {}
 };
 
 export const useSchoolSettings = () => {
@@ -37,20 +32,27 @@ export const useSchoolSettings = () => {
       try {
         const data = await fetcher('/school-setting?populate=*');
         if (data?.data) {
+          let logoUrl = data.data.logo?.url;
+          if (logoUrl && logoUrl.startsWith('/')) {
+            const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:1337/api';
+            const serverUrl = apiBase.replace('/api', '');
+            logoUrl = `${serverUrl}${logoUrl}`;
+          }
+
           return {
-            name: data.data.attributes?.name || fallbackSettings.name,
-            logoUrl: data.data.attributes?.logo?.data?.attributes?.url,
-            contactEmail: data.data.attributes?.contactEmail || fallbackSettings.contactEmail,
-            contactPhone: data.data.attributes?.contactPhone || fallbackSettings.contactPhone,
-            address: data.data.attributes?.address || fallbackSettings.address,
-            primaryColor: data.data.attributes?.primaryColor || fallbackSettings.primaryColor,
-            socialLinks: data.data.attributes?.socialLinks || fallbackSettings.socialLinks,
+            name: data.data.name || '',
+            logoUrl: logoUrl,
+            contactEmail: data.data.contactEmail || '',
+            contactPhone: data.data.contactPhone || '',
+            address: data.data.address || '',
+            primaryColor: data.data.primaryColor || '',
+            socialLinks: data.data.socialLinks || {},
           } as SchoolSettings;
         }
-        return fallbackSettings;
+        return emptySettings;
       } catch (error) {
-        console.warn('Failed to fetch school settings from Strapi, using fallback data.', error);
-        return fallbackSettings;
+        console.warn('Failed to fetch school settings from Strapi, using empty data.', error);
+        return emptySettings;
       }
     },
     staleTime: 1000 * 60 * 60, // Cache for 1 hour

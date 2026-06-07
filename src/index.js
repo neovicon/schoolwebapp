@@ -11,7 +11,7 @@ module.exports = {
         .findOne({ where: { type: 'public' } });
 
       if (publicRole) {
-        const apis = ['page', 'post', 'teacher', 'course', 'event'];
+        const apis = ['page', 'post', 'teacher', 'course', 'event', 'faq', 'notice', 'download', 'gallery-item'];
         
         for (const api of apis) {
           const uids = [`api::${api}.${api}.find`, `api::${api}.${api}.findOne`];
@@ -30,6 +30,23 @@ module.exports = {
             }
           }
         }
+
+        const createApis = ['admission-inquiry', 'message'];
+        for (const api of createApis) {
+          const action = `api::${api}.${api}.create`;
+          const permissionExists = await strapi
+            .query('plugin::users-permissions.permission')
+            .findOne({ where: { role: publicRole.id, action } });
+
+          if (!permissionExists) {
+            await strapi.query('plugin::users-permissions.permission').create({
+              data: {
+                action,
+                role: publicRole.id,
+              },
+            });
+          }
+        }
         
         const globalAction = 'api::global-setting.global-setting.find';
         const globalExists = await strapi
@@ -40,6 +57,34 @@ module.exports = {
            await strapi.query('plugin::users-permissions.permission').create({
               data: {
                 action: globalAction,
+                role: publicRole.id,
+              },
+           });
+        }
+
+        const schoolSettingAction = 'api::school-setting.school-setting.find';
+        const schoolSettingExists = await strapi
+            .query('plugin::users-permissions.permission')
+            .findOne({ where: { role: publicRole.id, action: schoolSettingAction } });
+        
+        if (!schoolSettingExists) {
+           await strapi.query('plugin::users-permissions.permission').create({
+              data: {
+                action: schoolSettingAction,
+                role: publicRole.id,
+              },
+           });
+        }
+
+        const pageBgAction = 'api::page-background.page-background.find';
+        const pageBgExists = await strapi
+            .query('plugin::users-permissions.permission')
+            .findOne({ where: { role: publicRole.id, action: pageBgAction } });
+        
+        if (!pageBgExists) {
+           await strapi.query('plugin::users-permissions.permission').create({
+              data: {
+                action: pageBgAction,
                 role: publicRole.id,
               },
            });

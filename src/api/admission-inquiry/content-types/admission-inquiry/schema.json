@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "admission_inquiries",
+  "info": {
+    "singularName": "admission-inquiry",
+    "pluralName": "admission-inquiries",
+    "displayName": "Admission Inquiry"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "attributes": {
+    "studentName": {
+      "type": "string",
+      "required": true
+    },
+    "dateOfBirth": {
+      "type": "date"
+    },
+    "gradeApplying": {
+      "type": "string",
+      "required": true
+    },
+    "previousSchool": {
+      "type": "string"
+    },
+    "parentName": {
+      "type": "string",
+      "required": true
+    },
+    "relation": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "occupation": {
+      "type": "string"
+    },
+    "message": {
+      "type": "text"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "reviewing",
+        "accepted",
+        "rejected"
+      ],
+      "default": "pending"
+    }
+  }
+}

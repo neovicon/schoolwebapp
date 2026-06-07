@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "gallery_items",
+  "info": {
+    "singularName": "gallery-item",
+    "pluralName": "gallery-items",
+    "displayName": "Gallery Item"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "required": true,
+      "allowedTypes": [
+        "images"
+      ],
+      "multiple": false
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "sports",
+        "academics",
+        "events",
+        "campus",
+        "other"
+      ],
+      "default": "other"
+    }
+  }
+}
