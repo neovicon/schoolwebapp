@@ -35,7 +35,7 @@ export default function Contact() {
   }, []);
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
+    let timer: ReturnType<typeof setInterval>;
     if (isRateLimited && cooldownTime > 0) {
       timer = setInterval(() => {
         setCooldownTime((prev) => {
