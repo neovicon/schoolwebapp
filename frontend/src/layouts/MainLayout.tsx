@@ -9,7 +9,7 @@ export default function MainLayout() {
   const location = useLocation();
 
   return (
-    <div className="flex flex-col min-h-screen font-sans text-slate-800 bg-slate-50">
+    <div className="flex flex-col min-h-screen font-sans">
       <Header />
       <main className="flex-grow pt-[72px]"> {/* Adjust padding for fixed header */}
         {location.pathname !== '/' && <Breadcrumbs />}

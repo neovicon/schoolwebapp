@@ -1,64 +1,143 @@
 @import "tailwindcss";
+@import "@fontsource/outfit/400.css";
+@import "@fontsource/outfit/500.css";
+@import "@fontsource/outfit/600.css";
+@import "@fontsource/outfit/700.css";
+@import "@fontsource/outfit/800.css";
+@import "@fontsource/inter/300.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
 
 @theme {
-  --font-sans: 'Inter', system-ui, sans-serif;
-  --font-heading: 'Outfit', system-ui, sans-serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-heading: "Outfit", system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --color-primary-50: #f0fdfa;
-  --color-primary-100: #ccfbf1;
-  --color-primary-200: #99f6e4;
-  --color-primary-300: #5eead4;
-  --color-primary-400: #2dd4bf;
-  --color-primary-500: #14b8a6;
-  --color-primary-600: #0d9488;
-  --color-primary-700: #0f766e;
-  --color-primary-800: #115e59;
-  --color-primary-900: #134e4a;
-  --color-primary-950: #042f2e;
+  /* Premium Modern Blue */
+  --color-primary-50: #f0f9ff;
+  --color-primary-100: #e0f2fe;
+  --color-primary-200: #bae6fd;
+  --color-primary-300: #7dd3fc;
+  --color-primary-400: #38bdf8;
+  --color-primary-500: #0ea5e9;
+  --color-primary-600: #0284c7;
+  --color-primary-700: #0369a1;
+  --color-primary-800: #075985;
+  --color-primary-900: #0c4a6e;
+  --color-primary-950: #082f49;
 
-  --color-secondary-50: #fdf8f6;
-  --color-secondary-500: #f97316;
-  --color-secondary-600: #ea580c;
-  --color-secondary-900: #7c2d12;
+  /* Vibrant Cyan Accent */
+  --color-secondary-50: #ecfeff;
+  --color-secondary-100: #cffafe;
+  --color-secondary-200: #a5f3fc;
+  --color-secondary-300: #67e8f9;
+  --color-secondary-400: #22d3ee;
+  --color-secondary-500: #06b6d4;
+  --color-secondary-600: #0891b2;
+  --color-secondary-700: #0e7490;
+  --color-secondary-800: #155e75;
+  --color-secondary-900: #164e63;
+  --color-secondary-950: #083344;
 }
 
 @layer base {
   :root {
-    /* Base Colors - Fallbacks (Deep Navy & Gold typical for schools) */
-    --color-primary-50: #f0fdfa;
-    --color-primary-100: #ccfbf1;
-    --color-primary-200: #99f6e4;
-    --color-primary-300: #5eead4;
-    --color-primary-400: #2dd4bf;
-    --color-primary-500: #14b8a6;
-    --color-primary-600: #0d9488;
-    --color-primary-700: #0f766e;
-    --color-primary-800: #115e59;
-    --color-primary-900: #134e4a;
-    --color-primary-950: #042f2e;
-
-    --color-secondary-50: #fdf8f6;
-    --color-secondary-500: #f97316;
-    --color-secondary-600: #ea580c;
-    --color-secondary-900: #7c2d12;
+    /* Fluid typography bases */
+    --fluid-min-width: 320;
+    --fluid-max-width: 1280;
+    --fluid-screen: 100vw;
   }
 
   body {
-    @apply text-slate-800 antialiased bg-slate-50 selection:bg-primary-500 selection:text-white;
+    @apply text-slate-700 antialiased bg-slate-50 dark:bg-slate-950 dark:text-slate-300 selection:bg-primary-500 selection:text-white;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading tracking-tight text-slate-900;
+    @apply font-heading tracking-tight text-slate-900 dark:text-white font-bold;
   }
+
+  h1 { font-size: clamp(2.5rem, 5vw + 1rem, 4.5rem); line-height: 1.1; }
+  h2 { font-size: clamp(2rem, 4vw + 1rem, 3.5rem); line-height: 1.2; }
+  h3 { font-size: clamp(1.5rem, 3vw + 1rem, 2.5rem); }
+  h4 { font-size: clamp(1.25rem, 2vw + 1rem, 1.75rem); }
+  h5 { font-size: clamp(1.125rem, 1.5vw + 1rem, 1.25rem); }
+  h6 { font-size: 1rem; }
 }
 
 @layer utilities {
+  /* Glassmorphism */
+  .glass {
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-white/10;
+  }
+  
   .glass-panel {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)];
+  }
+
+  .glass-card {
+    @apply bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border border-white/40 dark:border-white/10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)] transition-all duration-300 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] dark:hover:shadow-[0_20px_40px_rgb(0,0,0,0.4)] hover:-translate-y-1;
   }
   
   .container-custom {
-    @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12;
+  }
+
+  /* Sophisticated Gradients */
+  .mesh-bg {
+    background-color: #f8fafc;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(199, 100%, 94%, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(189, 100%, 90%, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(214, 100%, 95%, 1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(180, 100%, 96%, 1) 0px, transparent 50%);
+  }
+
+  .mesh-bg-dark {
+    background-color: #020617;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(199, 80%, 15%, 0.4) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(189, 80%, 15%, 0.4) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(214, 80%, 15%, 0.4) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(180, 80%, 15%, 0.4) 0px, transparent 50%);
+  }
+
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  
+  .dark .bg-noise {
+    opacity: 0.04;
+    mix-blend-mode: color-dodge;
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-100%); }
+  }
+
+  .animate-marquee {
+    animation: marquee 40s linear infinite;
+  }
+  .animate-marquee-slow {
+    animation: marquee 60s linear infinite;
+  }
+  
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-float-delayed {
+    animation: float 6s ease-in-out 3s infinite;
   }
 }

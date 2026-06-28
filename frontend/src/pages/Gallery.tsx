@@ -3,9 +3,10 @@ import { Helmet } from 'react-helmet-async';
 import { useQuery } from '@tanstack/react-query';
 import { fetcher } from '../api/axios';
 import { Tabs } from '../components/ui/Tabs';
-import { X, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Image as ImageIcon, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePageBackground } from '../hooks/usePageBackground';
+import ImageWithFallback from '../components/ui/ImageWithFallback';
 
 const CATEGORIES = [
   { label: 'All Photos', value: 'all' },
@@ -108,55 +109,89 @@ export default function Gallery() {
       </Helmet>
 
       <section 
-        className="bg-primary-900 py-20 text-center text-white relative"
+        className="bg-slate-950 pt-40 pb-24 text-center text-white relative overflow-hidden"
         style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
       >
-        {bgImage && <div className="absolute inset-0 bg-primary-900/80"></div>}
-        <div className="container-custom relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold font-heading mb-4">Photo Gallery</h1>
-          <p className="text-lg md:text-xl text-primary-100 max-w-2xl mx-auto">
+        {bgImage ? (
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"></div>
+        ) : (
+          <>
+            <div className="absolute inset-0 mesh-bg-dark opacity-100"></div>
+            <div className="absolute inset-0 bg-noise opacity-30"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-[400px] bg-secondary-500/20 filter blur-[120px] rounded-full pointer-events-none" />
+          </>
+        )}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="container-custom relative z-10"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-white/10 text-sm font-bold text-secondary-300 mb-6 shadow-lg shadow-secondary-500/10">
+            <Sparkles className="w-4 h-4 text-secondary-400" />
+            Moments Captured
+          </div>
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold font-heading mb-6 tracking-tighter">Photo Gallery</h1>
+          <p className="text-xl md:text-2xl text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
             A visual journey through the vibrant life at Global Excellence Academy.
           </p>
-        </div>
+        </motion.div>
       </section>
 
-      <section className="py-16 bg-slate-50 min-h-[60vh]">
-        <div className="container-custom">
-          <div className="flex justify-center mb-10">
-            <Tabs tabs={CATEGORIES} value={activeCategory} onChange={setActiveCategory} />
+      <section className="py-24 bg-slate-50 dark:bg-slate-950 min-h-[60vh] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-400/5 filter blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary-400/5 filter blur-[120px] rounded-full pointer-events-none" />
+
+        <div className="container-custom relative z-10">
+          <div className="flex justify-center mb-16">
+            <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-md rounded-2xl shadow-sm border border-slate-200/50 dark:border-white/10 p-1.5 overflow-x-auto w-full md:w-auto">
+              <Tabs tabs={CATEGORIES} value={activeCategory} onChange={setActiveCategory} className="border-none min-w-max bg-transparent p-0 border-0" />
+            </div>
           </div>
 
           {isLoading ? (
             <div className="flex justify-center py-20">
-              <div className="w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full animate-spin"></div>
+              <div className="w-16 h-16 border-4 border-slate-200 dark:border-slate-800 border-t-primary-500 rounded-full animate-spin"></div>
             </div>
           ) : filteredImages.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-slate-200">
-              <ImageIcon className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-medium text-slate-900 mb-2">No photos found</h3>
-              <p className="text-slate-500">There are no photos in this category yet.</p>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="text-center py-24 glass-card rounded-[2.5rem] border border-slate-200/50 dark:border-white/10"
+            >
+              <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800/50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <ImageIcon className="w-10 h-10 text-slate-400" />
+              </div>
+              <h3 className="text-2xl font-bold font-heading text-slate-900 dark:text-white mb-2">No photos found</h3>
+              <p className="text-slate-500 dark:text-slate-400 font-light text-lg">There are no photos in this category yet.</p>
+            </motion.div>
           ) : (
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-              {filteredImages.map((img: any, index: number) => (
-                <div 
-                  key={img.id} 
-                  className="break-inside-avoid rounded-2xl overflow-hidden cursor-pointer group relative shadow-sm border border-slate-200 hover:shadow-md transition-all"
-                  onClick={() => openLightbox(index)}
-                >
-                  <img 
-                    src={img.url} 
-                    alt={img.title || 'Gallery image'} 
-                    loading="lazy"
-                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                    {img.title && <h3 className="text-white font-semibold text-lg">{img.title}</h3>}
-                    <span className="text-primary-300 text-sm capitalize">{img.category}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <motion.div layout className="columns-1 sm:columns-2 lg:columns-3 gap-8 space-y-8">
+              <AnimatePresence>
+                {filteredImages.map((img: any, index: number) => (
+                  <motion.div 
+                    layout
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.4 }}
+                    key={img.id} 
+                    className="break-inside-avoid rounded-3xl overflow-hidden cursor-pointer group relative shadow-[0_15px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-slate-200/50 dark:border-white/10 transition-all duration-500"
+                    onClick={() => openLightbox(index)}
+                  >
+                    <ImageWithFallback 
+                      src={img.url} 
+                      alt={img.title || 'Gallery image'} 
+                      className="w-full h-auto object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                      {img.title && <h3 className="text-white font-bold text-2xl mb-2 translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{img.title}</h3>}
+                      <span className="inline-block px-3 py-1 bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest rounded-full self-start translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-75">{img.category}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
           )}
         </div>
       </section>
@@ -168,25 +203,25 @@ export default function Gallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-md"
             onClick={closeLightbox}
           >
             <button 
-              className="absolute top-4 right-4 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors z-50"
+              className="absolute top-6 right-6 text-white/50 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50 bg-black/20"
               onClick={closeLightbox}
             >
-              <X className="w-8 h-8" />
+              <X className="w-6 h-6" />
             </button>
             
             <button 
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50"
+              className="absolute left-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 rounded-full hover:bg-white/10 transition-colors z-50 bg-black/20"
               onClick={showPrev}
             >
               <ChevronLeft className="w-8 h-8" />
             </button>
             
             <button 
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-3 rounded-full hover:bg-white/10 transition-colors z-50"
+              className="absolute right-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white p-4 rounded-full hover:bg-white/10 transition-colors z-50 bg-black/20"
               onClick={showNext}
             >
               <ChevronRight className="w-8 h-8" />
@@ -196,17 +231,17 @@ export default function Gallery() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative max-w-5xl max-h-[90vh] w-full px-16 flex flex-col items-center justify-center"
+              className="relative max-w-6xl max-h-[90vh] w-full px-20 flex flex-col items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <img 
+              <ImageWithFallback 
                 src={filteredImages[lightboxIndex].url} 
                 alt={filteredImages[lightboxIndex].title || 'Gallery image'}
-                className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl"
+                className="max-w-full max-h-[85vh] object-contain rounded-2xl shadow-2xl ring-1 ring-white/10"
               />
               {filteredImages[lightboxIndex].title && (
-                <div className="absolute bottom-4 left-0 right-0 text-center">
-                  <span className="bg-black/60 text-white px-4 py-2 rounded-full text-sm backdrop-blur-md">
+                <div className="absolute bottom-6 left-0 right-0 text-center">
+                  <span className="glass bg-black/60 text-white px-6 py-3 rounded-full text-sm font-bold tracking-wide border border-white/10">
                     {filteredImages[lightboxIndex].title}
                   </span>
                 </div>

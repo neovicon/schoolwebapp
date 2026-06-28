@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const cloudinary = require('cloudinary').v2;
-const strapiApp = require('@strapi/strapi');
+const { createStrapi } = require('@strapi/strapi');
 
 async function run() {
   console.log('Initializing Strapi...');
-  const app = await strapiApp().load();
+  const app = await createStrapi().load();
 
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,

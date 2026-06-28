@@ -3,7 +3,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-import { Star } from 'lucide-react';
+import { Star, Quote } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface Testimonial {
   quote: string;
@@ -47,14 +48,34 @@ const defaultTestimonials: Testimonial[] = [
 
 export default function Testimonials({ title = 'What Our Community Says', subtitle = 'Read stories from parents and students about their experience with us.', testimonials = defaultTestimonials }: TestimonialsProps) {
   return (
-    <section className="py-24 bg-white">
-      <div className="container-custom">
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold font-heading text-slate-900 mb-4">{title}</h2>
-          <p className="text-lg text-slate-600">{subtitle}</p>
-        </div>
+    <section className="py-24 relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-400/10 filter blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-secondary-400/10 filter blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute inset-0 bg-noise opacity-50 pointer-events-none" />
 
-        <div className="pb-12">
+      <div className="container-custom relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-3xl mx-auto mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-primary-500/20 text-sm font-bold text-primary-600 dark:text-primary-400 mb-6">
+            <Star className="w-4 h-4 fill-primary-500" />
+            Testimonials
+          </div>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tighter mb-6">{title}</h2>
+          <p className="text-xl text-slate-600 dark:text-slate-400 font-light">{subtitle}</p>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="pb-16"
+        >
           <Swiper
             modules={[Autoplay, Pagination]}
             spaceBetween={30}
@@ -66,28 +87,39 @@ export default function Testimonials({ title = 'What Our Community Says', subtit
             }}
             autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
             pagination={{ clickable: true, dynamicBullets: true }}
-            className="w-full"
+            className="w-full !pb-16"
           >
             {testimonials.map((testimonial, index) => (
-              <SwiperSlide key={index} className="h-auto">
-                <div className="bg-slate-50 p-8 rounded-2xl h-full flex flex-col border border-slate-100">
-                  <div className="flex text-yellow-400 mb-6">
+              <SwiperSlide key={index} className="h-auto pb-4">
+                <div className="glass-card h-full p-8 flex flex-col relative group">
+                  <div className="absolute top-6 right-8 text-primary-200 dark:text-primary-900/50 group-hover:scale-110 transition-transform duration-300">
+                    <Quote className="w-12 h-12" />
+                  </div>
+                  
+                  <div className="flex text-amber-400 mb-8 relative z-10">
                     {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-5 h-5 ${i < testimonial.rating ? 'fill-current' : 'text-slate-300'}`} />
+                      <Star key={i} className={`w-5 h-5 ${i < testimonial.rating ? 'fill-current' : 'text-slate-200 dark:text-slate-700'}`} />
                     ))}
                   </div>
-                  <blockquote className="text-slate-700 mb-8 flex-grow text-lg leading-relaxed italic">
+                  
+                  <blockquote className="text-slate-700 dark:text-slate-300 mb-8 flex-grow text-lg leading-relaxed relative z-10">
                     "{testimonial.quote}"
                   </blockquote>
-                  <div className="mt-auto">
-                    <p className="font-semibold text-slate-900">{testimonial.author}</p>
-                    <p className="text-sm text-slate-500">{testimonial.role}</p>
+                  
+                  <div className="mt-auto relative z-10 flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                      {testimonial.author.charAt(0)}
+                    </div>
+                    <div>
+                      <p className="font-bold text-slate-900 dark:text-white">{testimonial.author}</p>
+                      <p className="text-sm font-medium text-primary-600 dark:text-primary-400">{testimonial.role}</p>
+                    </div>
                   </div>
                 </div>
               </SwiperSlide>
             ))}
           </Swiper>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

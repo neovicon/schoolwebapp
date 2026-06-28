@@ -6,6 +6,7 @@ import { Tabs } from '../components/ui/Tabs';
 import { Badge } from '../components/ui/Badge';
 import { FileText, Download as DownloadIcon, File, FileCode, FileSpreadsheet, FileImage } from 'lucide-react';
 import { usePageBackground } from '../hooks/usePageBackground';
+import { motion } from 'framer-motion';
 
 const CATEGORIES = [
   { label: 'All Files', value: 'all' },
@@ -82,16 +83,27 @@ export default function Downloads() {
       </Helmet>
 
       <section 
-        className="bg-primary-900 py-20 text-center text-white relative"
+        className="bg-slate-950 pt-32 pb-20 text-center text-white relative overflow-hidden"
         style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
       >
-        {bgImage && <div className="absolute inset-0 bg-primary-900/80"></div>}
-        <div className="container-custom relative z-10">
-          <h1 className="text-4xl md:text-5xl font-bold font-heading mb-4">Resource Center</h1>
-          <p className="text-lg md:text-xl text-primary-100 max-w-2xl mx-auto">
+        {bgImage ? (
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+        ) : (
+          <>
+            <div className="absolute inset-0 mesh-bg-dark opacity-50"></div>
+            <div className="absolute inset-0 bg-noise"></div>
+          </>
+        )}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="container-custom relative z-10"
+        >
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold font-heading mb-6 tracking-tighter">Resource Center</h1>
+          <p className="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
             Access important documents, forms, syllabus, and circulars easily.
           </p>
-        </div>
+        </motion.div>
       </section>
 
       <section className="py-16 bg-slate-50 min-h-[60vh]">

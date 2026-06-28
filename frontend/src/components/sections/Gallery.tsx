@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Image as ImageIcon, Sparkles } from 'lucide-react';
+import ImageWithFallback from '../ui/ImageWithFallback';
+import { motion } from 'framer-motion';
 
 interface GalleryImage {
   id: string | number;
@@ -30,42 +32,69 @@ export default function GallerySection({ title = 'Campus Gallery', subtitle = 'T
   if (displayImages.length === 0) return null;
 
   return (
-    <section className="py-24 bg-white">
-      <div className="container-custom">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="max-w-2xl">
-            <h2 className="text-3xl md:text-4xl font-bold font-heading text-slate-900 mb-4">{title}</h2>
-            <p className="text-lg text-slate-600">{subtitle}</p>
+    <section className="py-32 relative bg-white dark:bg-slate-950 overflow-hidden">
+      {/* Background elements */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-secondary-400/5 filter blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-primary-500/5 filter blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="container-custom relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8"
+        >
+          <div className="max-w-3xl">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass border border-slate-200 dark:border-white/10 text-sm font-bold text-slate-700 dark:text-slate-300 mb-6 shadow-sm">
+              <ImageIcon className="w-4 h-4 text-primary-500" />
+              Life at Campus
+            </div>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-heading text-slate-900 dark:text-white tracking-tighter mb-6">{title}</h2>
+            <p className="text-xl text-slate-600 dark:text-slate-400 font-light">{subtitle}</p>
           </div>
           <Link 
             to="/gallery" 
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-50 text-primary-700 rounded-lg font-medium hover:bg-primary-100 transition-colors whitespace-nowrap"
+            className="group inline-flex items-center gap-2 px-8 py-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-full font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-all duration-300 hover:shadow-lg active:scale-95 whitespace-nowrap"
           >
             View Full Gallery
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 auto-rows-[200px] md:auto-rows-[250px]">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8 auto-rows-[250px] md:auto-rows-[300px]"
+        >
           {displayImages.map((img, index) => {
             // Make the first image span 2 rows for a masonry effect
             const isFeatured = index === 0;
             return (
-              <div 
+              <motion.div 
+                whileHover={{ y: -8 }}
                 key={img.id} 
-                className={`group relative overflow-hidden rounded-2xl bg-slate-100 ${isFeatured ? 'row-span-2' : ''}`}
+                className={`group relative overflow-hidden rounded-3xl bg-slate-100 dark:bg-slate-900 shadow-[0_10px_30px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_rgba(0,0,0,0.3)] ${isFeatured ? 'row-span-2' : ''}`}
               >
-                <img 
+                <ImageWithFallback 
                   src={img.url} 
                   alt={img.alt} 
-                  loading="lazy"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                
+                <div className="absolute inset-0 p-8 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-500 translate-y-4 group-hover:translate-y-0">
+                  <div className="w-12 h-12 rounded-full glass flex items-center justify-center text-white mb-4">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <h3 className="text-white font-bold text-xl">{img.alt}</h3>
+                </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -6,6 +6,8 @@ import { Card, CardBody } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Calendar, ChevronRight } from 'lucide-react';
 import { usePageBackground } from '../hooks/usePageBackground';
+import { motion } from 'framer-motion';
+import ImageWithFallback from '../components/ui/ImageWithFallback';
 
 export default function News() {
   const { data: bgImage } = usePageBackground('news');
@@ -53,16 +55,27 @@ export default function News() {
       </Helmet>
 
       <section 
-        className="bg-primary-900 py-16 text-center text-white relative"
+        className="bg-slate-950 pt-32 pb-20 text-center text-white relative overflow-hidden"
         style={bgImage ? { backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
       >
-        {bgImage && <div className="absolute inset-0 bg-primary-900/80"></div>}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <h1 className="text-4xl font-bold font-heading">Latest News</h1>
-          <p className="mt-4 text-primary-100 max-w-2xl mx-auto">
+        {bgImage ? (
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+        ) : (
+          <>
+            <div className="absolute inset-0 mesh-bg-dark opacity-50"></div>
+            <div className="absolute inset-0 bg-noise"></div>
+          </>
+        )}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
+        >
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold font-heading mb-6 tracking-tighter">Latest News</h1>
+          <p className="mt-6 text-lg md:text-xl text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
             Stay up to date with the latest stories, announcements, and achievements from our school community.
           </p>
-        </div>
+        </motion.div>
       </section>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -74,10 +87,9 @@ export default function News() {
               <Card key={item.id} className="flex flex-col">
                 {item.attributes.coverImage?.data && (
                   <div className="aspect-[16/9] w-full overflow-hidden">
-                    <img 
+                    <ImageWithFallback 
                       src={item.attributes.coverImage.data.attributes.url} 
                       alt={item.attributes.title}
-                      loading="lazy"
                       className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
                     />
                   </div>
