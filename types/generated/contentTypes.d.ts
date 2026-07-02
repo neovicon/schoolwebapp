@@ -506,6 +506,48 @@ export interface ApiAboutAbout extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiAcademicYearAcademicYear
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'academic_years';
+  info: {
+    description: '';
+    displayName: 'Academic Year';
+    pluralName: 'academic-years';
+    singularName: 'academic-year';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    description: Schema.Attribute.Text;
+    endDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    enrollments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::enrollment.enrollment'
+    >;
+    isCurrent: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::academic-year.academic-year'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    school: Schema.Attribute.Relation<'manyToOne', 'api::school.school'>;
+    sections: Schema.Attribute.Relation<'oneToMany', 'api::section.section'>;
+    startDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    status: Schema.Attribute.Enumeration<['active', 'inactive']> &
+      Schema.Attribute.DefaultTo<'active'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiAdmissionInquiryAdmissionInquiry
   extends Struct.CollectionTypeSchema {
   collectionName: 'admission_inquiries';
@@ -518,12 +560,31 @@ export interface ApiAdmissionInquiryAdmissionInquiry
     draftAndPublish: false;
   };
   attributes: {
+    academicYear: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::academic-year.academic-year'
+    >;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     dateOfBirth: Schema.Attribute.Date;
+    decisionAt: Schema.Attribute.DateTime;
+    desiredClass: Schema.Attribute.Relation<'manyToOne', 'api::class.class'>;
+    documents: Schema.Attribute.Component<
+      'admission-inquiry.admission-document',
+      true
+    >;
     email: Schema.Attribute.Email & Schema.Attribute.Required;
     gradeApplying: Schema.Attribute.String & Schema.Attribute.Required;
+    guardian: Schema.Attribute.Component<
+      'admission-inquiry.guardian-info',
+      false
+    >;
+    interview: Schema.Attribute.Component<
+      'admission-inquiry.interview-info',
+      false
+    >;
+    interviewAt: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -537,11 +598,26 @@ export interface ApiAdmissionInquiryAdmissionInquiry
     previousSchool: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
     relation: Schema.Attribute.String;
+    stage: Schema.Attribute.Enumeration<
+      [
+        'inquiry',
+        'submitted',
+        'documents_pending',
+        'documents_verified',
+        'interview_scheduled',
+        'interview_completed',
+        'accepted',
+        'rejected',
+        'enrolled',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'inquiry'>;
     status: Schema.Attribute.Enumeration<
       ['pending', 'reviewing', 'accepted', 'rejected']
     > &
       Schema.Attribute.DefaultTo<'pending'>;
     studentName: Schema.Attribute.String & Schema.Attribute.Required;
+    submittedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -652,6 +728,40 @@ export interface ApiCategoryCategory extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiClassClass extends Struct.CollectionTypeSchema {
+  collectionName: 'classes';
+  info: {
+    description: '';
+    displayName: 'Class';
+    pluralName: 'classes';
+    singularName: 'class';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    capacity: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<40>;
+    code: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    level: Schema.Attribute.Integer & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::class.class'> &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    school: Schema.Attribute.Relation<'manyToOne', 'api::school.school'>;
+    sections: Schema.Attribute.Relation<'oneToMany', 'api::section.section'>;
+    status: Schema.Attribute.Enumeration<['active', 'inactive']> &
+      Schema.Attribute.DefaultTo<'active'>;
+    subjects: Schema.Attribute.Relation<'oneToMany', 'api::subject.subject'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiCourseCourse extends Struct.CollectionTypeSchema {
   collectionName: 'courses';
   info: {
@@ -714,6 +824,47 @@ export interface ApiDownloadDownload extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiEnrollmentEnrollment extends Struct.CollectionTypeSchema {
+  collectionName: 'enrollments';
+  info: {
+    description: '';
+    displayName: 'Enrollment';
+    pluralName: 'enrollments';
+    singularName: 'enrollment';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    academicYear: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::academic-year.academic-year'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    enrollmentDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::enrollment.enrollment'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    rollNumber: Schema.Attribute.String & Schema.Attribute.Required;
+    section: Schema.Attribute.Relation<'manyToOne', 'api::section.section'>;
+    status: Schema.Attribute.Enumeration<['active', 'withdrawn']> &
+      Schema.Attribute.DefaultTo<'active'>;
+    studentProfile: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::student-profile.student-profile'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1082,6 +1233,244 @@ export interface ApiSchoolSettingSchoolSetting extends Struct.SingleTypeSchema {
   };
 }
 
+export interface ApiSchoolSchool extends Struct.CollectionTypeSchema {
+  collectionName: 'schools';
+  info: {
+    description: '';
+    displayName: 'School';
+    pluralName: 'schools';
+    singularName: 'school';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    academicYears: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::academic-year.academic-year'
+    >;
+    address: Schema.Attribute.Text;
+    classes: Schema.Attribute.Relation<'oneToMany', 'api::class.class'>;
+    code: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    email: Schema.Attribute.Email;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::school.school'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    phone: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<['active', 'inactive']> &
+      Schema.Attribute.DefaultTo<'active'>;
+    studentProfiles: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::student-profile.student-profile'
+    >;
+    teacherProfiles: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::teacher-profile.teacher-profile'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiSectionSection extends Struct.CollectionTypeSchema {
+  collectionName: 'sections';
+  info: {
+    description: '';
+    displayName: 'Section';
+    pluralName: 'sections';
+    singularName: 'section';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    academicYear: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::academic-year.academic-year'
+    >;
+    capacity: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<40>;
+    class: Schema.Attribute.Relation<'manyToOne', 'api::class.class'>;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    enrollments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::enrollment.enrollment'
+    >;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::section.section'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    room: Schema.Attribute.String;
+    teacherProfile: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::teacher-profile.teacher-profile'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiStudentProfileStudentProfile
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'student_profiles';
+  info: {
+    description: '';
+    displayName: 'Student Profile';
+    pluralName: 'student-profiles';
+    singularName: 'student-profile';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    address: Schema.Attribute.Text;
+    admissionNumber: Schema.Attribute.String & Schema.Attribute.Required;
+    bloodGroup: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dateOfBirth: Schema.Attribute.Date & Schema.Attribute.Required;
+    emergencyContact: Schema.Attribute.String & Schema.Attribute.Required;
+    enrollments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::enrollment.enrollment'
+    >;
+    firstName: Schema.Attribute.String & Schema.Attribute.Required;
+    gender: Schema.Attribute.Enumeration<['male', 'female', 'other']>;
+    lastName: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::student-profile.student-profile'
+    > &
+      Schema.Attribute.Private;
+    phone: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    school: Schema.Attribute.Relation<'manyToOne', 'api::school.school'>;
+    status: Schema.Attribute.Enumeration<
+      ['active', 'suspended', 'graduated', 'transferred', 'archived']
+    > &
+      Schema.Attribute.DefaultTo<'active'>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
+export interface ApiSubjectSubject extends Struct.CollectionTypeSchema {
+  collectionName: 'subjects';
+  info: {
+    description: '';
+    displayName: 'Subject';
+    pluralName: 'subjects';
+    singularName: 'subject';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    class: Schema.Attribute.Relation<'manyToOne', 'api::class.class'>;
+    code: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    credits: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<3>;
+    description: Schema.Attribute.Text;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::subject.subject'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    status: Schema.Attribute.Enumeration<['active', 'inactive']> &
+      Schema.Attribute.DefaultTo<'active'>;
+    teacherProfiles: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::teacher-profile.teacher-profile'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTeacherProfileTeacherProfile
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'teacher_profiles';
+  info: {
+    description: '';
+    displayName: 'Teacher Profile';
+    pluralName: 'teacher-profiles';
+    singularName: 'teacher-profile';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    address: Schema.Attribute.Text;
+    bloodGroup: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    dateOfBirth: Schema.Attribute.Date;
+    email: Schema.Attribute.Email;
+    employeeId: Schema.Attribute.String & Schema.Attribute.Required;
+    firstName: Schema.Attribute.String & Schema.Attribute.Required;
+    gender: Schema.Attribute.Enumeration<['male', 'female', 'other']>;
+    joiningDate: Schema.Attribute.Date;
+    lastName: Schema.Attribute.String & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::teacher-profile.teacher-profile'
+    > &
+      Schema.Attribute.Private;
+    phoneNumber: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    qualification: Schema.Attribute.String;
+    school: Schema.Attribute.Relation<'manyToOne', 'api::school.school'>;
+    sections: Schema.Attribute.Relation<'oneToMany', 'api::section.section'>;
+    status: Schema.Attribute.Enumeration<
+      ['active', 'on_leave', 'retired', 'resigned', 'archived']
+    > &
+      Schema.Attribute.DefaultTo<'active'>;
+    subjects: Schema.Attribute.Relation<'manyToMany', 'api::subject.subject'>;
+    teacher: Schema.Attribute.Relation<'oneToOne', 'api::teacher.teacher'>;
+    teachingAssignments: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::teaching-assignment.teaching-assignment'
+    >;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    user: Schema.Attribute.Relation<
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+  };
+}
+
 export interface ApiTeacherTeacher extends Struct.CollectionTypeSchema {
   collectionName: 'teachers';
   info: {
@@ -1111,6 +1500,47 @@ export interface ApiTeacherTeacher extends Struct.CollectionTypeSchema {
     posts: Schema.Attribute.Relation<'oneToMany', 'api::post.post'>;
     publishedAt: Schema.Attribute.DateTime;
     subject: Schema.Attribute.String;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiTeachingAssignmentTeachingAssignment
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'teaching_assignments';
+  info: {
+    description: 'Assignments of teachers to subjects, classes, sections, and academic years';
+    displayName: 'Teaching Assignment';
+    pluralName: 'teaching-assignments';
+    singularName: 'teaching-assignment';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    academicYear: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::academic-year.academic-year'
+    >;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::teaching-assignment.teaching-assignment'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    section: Schema.Attribute.Relation<'manyToOne', 'api::section.section'>;
+    status: Schema.Attribute.Enumeration<['active', 'inactive']> &
+      Schema.Attribute.DefaultTo<'active'>;
+    subject: Schema.Attribute.Relation<'manyToOne', 'api::subject.subject'>;
+    teacherProfile: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::teacher-profile.teacher-profile'
+    >;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1630,12 +2060,15 @@ declare module '@strapi/strapi' {
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
       'api::about.about': ApiAboutAbout;
+      'api::academic-year.academic-year': ApiAcademicYearAcademicYear;
       'api::admission-inquiry.admission-inquiry': ApiAdmissionInquiryAdmissionInquiry;
       'api::article.article': ApiArticleArticle;
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
+      'api::class.class': ApiClassClass;
       'api::course.course': ApiCourseCourse;
       'api::download.download': ApiDownloadDownload;
+      'api::enrollment.enrollment': ApiEnrollmentEnrollment;
       'api::event.event': ApiEventEvent;
       'api::faq.faq': ApiFaqFaq;
       'api::gallery-item.gallery-item': ApiGalleryItemGalleryItem;
@@ -1647,7 +2080,13 @@ declare module '@strapi/strapi' {
       'api::page.page': ApiPagePage;
       'api::post.post': ApiPostPost;
       'api::school-setting.school-setting': ApiSchoolSettingSchoolSetting;
+      'api::school.school': ApiSchoolSchool;
+      'api::section.section': ApiSectionSection;
+      'api::student-profile.student-profile': ApiStudentProfileStudentProfile;
+      'api::subject.subject': ApiSubjectSubject;
+      'api::teacher-profile.teacher-profile': ApiTeacherProfileTeacherProfile;
       'api::teacher.teacher': ApiTeacherTeacher;
+      'api::teaching-assignment.teaching-assignment': ApiTeachingAssignmentTeachingAssignment;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

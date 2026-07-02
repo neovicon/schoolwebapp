@@ -9,51 +9,35 @@
   "options": {
     "draftAndPublish": false
   },
+  "pluginOptions": {},
   "attributes": {
-    "studentName": {
-      "type": "string",
-      "required": true
-    },
-    "dateOfBirth": {
-      "type": "date"
-    },
-    "gradeApplying": {
-      "type": "string",
-      "required": true
-    },
-    "previousSchool": {
-      "type": "string"
-    },
-    "parentName": {
-      "type": "string",
-      "required": true
-    },
-    "relation": {
-      "type": "string"
-    },
-    "phone": {
-      "type": "string",
-      "required": true
-    },
-    "email": {
-      "type": "email",
-      "required": true
-    },
-    "occupation": {
-      "type": "string"
-    },
-    "message": {
-      "type": "text"
-    },
+    "studentName": { "type": "string", "required": true },
+    "dateOfBirth": { "type": "date" },
+    "gradeApplying": { "type": "string", "required": true },
+    "previousSchool": { "type": "string" },
+    "parentName": { "type": "string", "required": true },
+    "relation": { "type": "string" },
+    "phone": { "type": "string", "required": true },
+    "email": { "type": "email", "required": true },
+    "occupation": { "type": "string" },
+    "message": { "type": "text" },
     "status": {
       "type": "enumeration",
-      "enum": [
-        "pending",
-        "reviewing",
-        "accepted",
-        "rejected"
-      ],
+      "enum": ["pending","reviewing","accepted","rejected"],
       "default": "pending"
-    }
+    },
+    "stage": {
+      "type": "enumeration",
+      "enum": ["inquiry","submitted","documents_pending","documents_verified","interview_scheduled","interview_completed","accepted","rejected","enrolled"],
+      "default": "inquiry"
+    },
+    "guardian": { "type": "component", "repeatable": false, "component": "admission-inquiry.guardian-info" },
+    "desiredClass": { "type": "relation", "relation": "manyToOne", "target": "api::class.class" },
+    "academicYear": { "type": "relation", "relation": "manyToOne", "target": "api::academic-year.academic-year" },
+    "documents": { "type": "component", "repeatable": true, "component": "admission-inquiry.admission-document" },
+    "interview": { "type": "component", "repeatable": false, "component": "admission-inquiry.interview-info" },
+    "submittedAt": { "type": "datetime" },
+    "interviewAt": { "type": "datetime" },
+    "decisionAt": { "type": "datetime" }
   }
 }

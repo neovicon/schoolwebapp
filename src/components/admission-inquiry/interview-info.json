@@ -1,0 +1,13 @@
+{
+  "collectionName": "interview_infos",
+  "info": {
+    "displayName": "Interview Info",
+    "description": "Interview scheduling and outcome"
+  },
+  "attributes": {
+    "scheduledAt": { "type": "datetime" },
+    "location": { "type": "string" },
+    "interviewer": { "type": "string" },
+    "outcome": { "type": "enumeration", "enum": ["pending","pass","fail"], "default": "pending" }
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sections",
+  "info": {
+    "singularName": "section",
+    "pluralName": "sections",
+    "displayName": "Section",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "room": {
+      "type": "string"
+    },
+    "capacity": {
+      "type": "integer",
+      "default": 40
+    },
+    "class": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::class.class",
+      "inversedBy": "sections"
+    },
+    "academicYear": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::academic-year.academic-year",
+      "inversedBy": "sections"
+    },
+    "teacherProfile": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::teacher-profile.teacher-profile",
+      "inversedBy": "sections"
+    },
+    "enrollments": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::enrollment.enrollment",
+      "mappedBy": "section"
+    }
+  }
+}

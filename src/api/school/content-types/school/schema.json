@@ -1,0 +1,65 @@
+{
+  "kind": "collectionType",
+  "collectionName": "schools",
+  "info": {
+    "singularName": "school",
+    "pluralName": "schools",
+    "displayName": "School",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "code": {
+      "type": "string",
+      "required": true
+    },
+    "address": {
+      "type": "text"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "email"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "academicYears": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::academic-year.academic-year",
+      "mappedBy": "school"
+    },
+    "classes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::class.class",
+      "mappedBy": "school"
+    },
+    "studentProfiles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::student-profile.student-profile",
+      "mappedBy": "school"
+    },
+    "teacherProfiles": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::teacher-profile.teacher-profile",
+      "mappedBy": "school"
+    }
+  }
+}

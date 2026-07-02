@@ -90,8 +90,71 @@ module.exports = {
            });
         }
       }
+
+      // Automatically create default ERP roles
+      const erpRoles = [
+        { name: 'Student', type: 'student', description: 'ERP Student portal access role' },
+        { name: 'Teacher', type: 'teacher', description: 'ERP Teacher portal access role' },
+        { name: 'Staff', type: 'staff', description: 'ERP Administrative Staff portal access role' },
+      ];
+
+      for (const roleInfo of erpRoles) {
+        const roleExists = await strapi
+          .query('plugin::users-permissions.role')
+          .findOne({ where: { type: roleInfo.type } });
+
+        if (!roleExists) {
+          await strapi.query('plugin::users-permissions.role').create({
+            data: {
+              name: roleInfo.name,
+              type: roleInfo.type,
+              description: roleInfo.description,
+            },
+          });
+          console.log(`Created ERP role: ${roleInfo.name}`);
+        }
+      }
+
+      // Automatically grant permissions to 'public' and 'authenticated' roles for ERP APIs
+      const erpApis = [
+        'student-profile',
+        'teacher-profile',
+        'teaching-assignment',
+        'enrollment',
+        'section',
+        'class',
+        'academic-year',
+        'subject',
+        'teacher'
+      ];
+      const rolesToGrant = ['public', 'authenticated'];
+      for (const roleType of rolesToGrant) {
+        const roleObj = await strapi
+          .query('plugin::users-permissions.role')
+          .findOne({ where: { type: roleType } });
+
+        if (roleObj) {
+          for (const api of erpApis) {
+            const actions = ['find', 'findOne', 'create', 'update', 'delete'].map(act => `api::${api}.${api}.${act}`);
+            for (const action of actions) {
+              const permissionExists = await strapi
+                .query('plugin::users-permissions.permission')
+                .findOne({ where: { role: roleObj.id, action } });
+
+              if (!permissionExists) {
+                await strapi.query('plugin::users-permissions.permission').create({
+                  data: {
+                    action,
+                    role: roleObj.id,
+                  },
+                });
+              }
+            }
+          }
+        }
+      }
     } catch (err) {
-      console.error('Error setting public permissions in bootstrap:', err);
+      console.error('Error setting public permissions/ERP roles/ERP permissions in bootstrap:', err);
     }
   },
 };

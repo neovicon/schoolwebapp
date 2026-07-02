@@ -1,0 +1,13 @@
+{
+  "collectionName": "guardian_infos",
+  "info": {
+    "displayName": "Guardian Info",
+    "description": "Information about the applicant's guardian"
+  },
+  "attributes": {
+    "name": { "type": "string", "required": true },
+    "relationship": { "type": "string", "required": true },
+    "phone": { "type": "string", "required": true },
+    "email": { "type": "email" }
+  }
+}

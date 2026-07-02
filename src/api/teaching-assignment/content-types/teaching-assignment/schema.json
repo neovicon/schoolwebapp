@@ -1,0 +1,45 @@
+{
+  "kind": "collectionType",
+  "collectionName": "teaching_assignments",
+  "info": {
+    "singularName": "teaching-assignment",
+    "pluralName": "teaching-assignments",
+    "displayName": "Teaching Assignment",
+    "description": "Assignments of teachers to subjects, classes, sections, and academic years"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active"
+    },
+    "teacherProfile": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::teacher-profile.teacher-profile",
+      "inversedBy": "teachingAssignments"
+    },
+    "subject": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::subject.subject"
+    },
+    "section": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::section.section"
+    },
+    "academicYear": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::academic-year.academic-year"
+    }
+  }
+}

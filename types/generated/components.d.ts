@@ -1,5 +1,58 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface AdmissionInquiryAdmissionDocument
+  extends Struct.ComponentSchema {
+  collectionName: 'admission_documents';
+  info: {
+    description: 'Document required for admission';
+    displayName: 'Admission Document';
+  };
+  attributes: {
+    placeholderUrl: Schema.Attribute.String;
+    status: Schema.Attribute.Enumeration<['pending', 'uploaded', 'verified']> &
+      Schema.Attribute.DefaultTo<'pending'>;
+    type: Schema.Attribute.Enumeration<
+      [
+        'birth_certificate',
+        'national_id',
+        'transcript',
+        'photo',
+        'recommendation_letter',
+      ]
+    > &
+      Schema.Attribute.Required;
+  };
+}
+
+export interface AdmissionInquiryGuardianInfo extends Struct.ComponentSchema {
+  collectionName: 'guardian_infos';
+  info: {
+    description: "Information about the applicant's guardian";
+    displayName: 'Guardian Info';
+  };
+  attributes: {
+    email: Schema.Attribute.Email;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    phone: Schema.Attribute.String & Schema.Attribute.Required;
+    relationship: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
+export interface AdmissionInquiryInterviewInfo extends Struct.ComponentSchema {
+  collectionName: 'interview_infos';
+  info: {
+    description: 'Interview scheduling and outcome';
+    displayName: 'Interview Info';
+  };
+  attributes: {
+    interviewer: Schema.Attribute.String;
+    location: Schema.Attribute.String;
+    outcome: Schema.Attribute.Enumeration<['pending', 'pass', 'fail']> &
+      Schema.Attribute.DefaultTo<'pending'>;
+    scheduledAt: Schema.Attribute.DateTime;
+  };
+}
+
 export interface BlocksCallToAction extends Struct.ComponentSchema {
   collectionName: 'components_blocks_call_to_actions';
   info: {
@@ -162,6 +215,9 @@ export interface SharedSlider extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'admission-inquiry.admission-document': AdmissionInquiryAdmissionDocument;
+      'admission-inquiry.guardian-info': AdmissionInquiryGuardianInfo;
+      'admission-inquiry.interview-info': AdmissionInquiryInterviewInfo;
       'blocks.call-to-action': BlocksCallToAction;
       'blocks.faq': BlocksFaq;
       'blocks.hero': BlocksHero;

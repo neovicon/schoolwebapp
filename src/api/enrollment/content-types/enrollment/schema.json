@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "enrollments",
+  "info": {
+    "singularName": "enrollment",
+    "pluralName": "enrollments",
+    "displayName": "Enrollment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "rollNumber": {
+      "type": "string",
+      "required": true
+    },
+    "enrollmentDate": {
+      "type": "date",
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "active",
+        "withdrawn"
+      ],
+      "default": "active"
+    },
+    "studentProfile": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::student-profile.student-profile",
+      "inversedBy": "enrollments"
+    },
+    "section": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::section.section",
+      "inversedBy": "enrollments"
+    },
+    "academicYear": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::academic-year.academic-year",
+      "inversedBy": "enrollments"
+    }
+  }
+}

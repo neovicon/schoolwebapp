@@ -1,0 +1,12 @@
+{
+  "collectionName": "admission_documents",
+  "info": {
+    "displayName": "Admission Document",
+    "description": "Document required for admission"
+  },
+  "attributes": {
+    "type": { "type": "enumeration", "enum": ["birth_certificate","national_id","transcript","photo","recommendation_letter"], "required": true },
+    "status": { "type": "enumeration", "enum": ["pending","uploaded","verified"], "default": "pending" },
+    "placeholderUrl": { "type": "string" }
+  }
+}
